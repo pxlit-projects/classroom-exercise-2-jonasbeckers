@@ -1,10 +1,12 @@
 package be.pxl.spring.rest.fallout;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.sun.org.apache.xpath.internal.operations.Quo;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping(MemorableQuotesController.QUOTE_BASE_URL)
 @RestController
@@ -20,6 +22,18 @@ public class MemorableQuotesController {
         quotes.add(Quote.of("Liberty Prime","Freedom is the sovereign right of every American"));
         quotes.add(Quote.of("Thomas Hildern","Too many people have opnions on things they know nothing about. And the more ignorant they are, the more opinions they have"));
         quotes.add(Quote.of("Moira Brown", "Here, take a few radiation chems, as my little way of saying, \"I'm sorry I twisted your DNA like a kitten with a ball of yarn.\""));
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    List<Quote> quotesByAuthor(@RequestParam(value="author") String author) {
+        return quotes.stream().filter(q -> q.getAuthor().equals(author)).collect(Collectors.toList());
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    Quote addQuote(@RequestBody Quote quote) {
+        quotes.add(quote);
+        return quote;
     }
 
 }
